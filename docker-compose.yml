@@ -1,0 +1,10 @@
+services:
+  app:
+    build: .
+    volumes:
+      - ./data:/app/data
+      - ./.env:/app/.env
+    working_dir: /app
+    command: python src/generate.py
+    environment:
+      - PYTHONPATH=/app
