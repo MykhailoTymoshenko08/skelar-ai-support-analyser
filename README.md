@@ -7,11 +7,8 @@
 
 ### 1. Підготовка
 ```bash
-# Клонувати репозиторій
-git clone <repository-url>
-cd <project-folder>
-
-# Створити .env файл з API ключем
+git clone https://github.com/MykhailoTymoshenko08/skelar-ai-support-analyser
+cd skelar-ai-support-analyser
 echo "OPENROUTER_API_KEY=your-api-key-here" > .env
 ```
 
@@ -19,17 +16,19 @@ echo "OPENROUTER_API_KEY=your-api-key-here" > .env
 ```bash
 docker build -t chat-analyzer .
 ```
+### 3. Запуск
 
-### 3. Запуск генерації діалогів
+#### Запуск генерації діалогів
 ```bash
 docker run -v $(pwd)/data:/app/data chat-analyzer python src/generate.py
 ```
 
-### 4. Запуск аналізу діалогів
+#### Запуск аналізу діалогів
 ```bash
 docker run -v $(pwd)/data:/app/data chat-analyzer python src/analyze.py
 ```
 
-5. Або використовувати docker-compose
+#### Або використовувати docker-compose
 ```bash
 docker-compose up app
+```
