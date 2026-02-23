@@ -1,0 +1,101 @@
+{
+  "results": [
+    {
+      "conversation_id": 1,
+      "intent": "other",
+      "satisfaction": "dissatisfied",
+      "quality_score": 2,
+      "agent_mistakes": [
+        "no_resolution",
+        "incomplete_info",
+        "impatient"
+      ],
+      "resolution_status": "unresolved",
+      "hidden_dissatisfaction_score": 0.95,
+      "key_action_items": [
+        "Provide concrete timeline with specific date",
+        "Offer compensation or discount for delay",
+        "Escalate to supervisor for immediate action",
+        "Send automated progress updates",
+        "Document client's frustration for quality review"
+      ],
+      "agent_performance": "poor",
+      "detected_persona": "hidden_dissatisfied"
+    },
+    {
+      "conversation_id": 2,
+      "intent": "other",
+      "satisfaction": "hidden_dissatisfaction",
+      "quality_score": 4,
+      "agent_mistakes": [],
+      "resolution_status": "partially_resolved",
+      "hidden_dissatisfaction_score": 0.7,
+      "key_action_items": [
+        "Follow up with carrier for expedited delivery options",
+        "Provide more precise tracking details if available",
+        "Send proactive update if delivery timeline changes"
+      ],
+      "agent_performance": "good",
+      "detected_persona": "hidden_dissatisfied"
+    },
+    {
+      "conversation_id": 3,
+      "intent": "other",
+      "satisfaction": "satisfied",
+      "quality_score": 5,
+      "agent_mistakes": [],
+      "resolution_status": "resolved",
+      "hidden_dissatisfaction_score": 0.0,
+      "key_action_items": [
+        "Process expedited replacement shipment",
+        "Apply 15% discount to next order",
+        "Send confirmation email with new tracking details"
+      ],
+      "agent_performance": "good",
+      "detected_persona": "hidden_dissatisfied"
+    },
+    {
+      "conversation_id": 4,
+      "intent": "account_access",
+      "satisfaction": "neutral",
+      "quality_score": 4,
+      "agent_mistakes": [],
+      "resolution_status": "unresolved",
+      "hidden_dissatisfaction_score": 0.7,
+      "key_action_items": [
+        "Escalate to technical team",
+        "Confirm client's contact information",
+        "Follow up with client via email"
+      ],
+      "agent_performance": "good",
+      "detected_persona": "hidden_dissatisfied"
+    },
+    {
+      "conversation_id": 5,
+      "intent": "tech_error",
+      "satisfaction": "dissatisfied",
+      "quality_score": 2,
+      "agent_mistakes": [
+        "unnecessary_escalation",
+        "incomplete_info",
+        "impatient"
+      ],
+      "resolution_status": "unresolved",
+      "hidden_dissatisfaction_score": 0.8,
+      "key_action_items": [
+        "Escalate to technical team immediately",
+        "Provide client with direct contact for follow-up",
+        "Investigate root cause of app crashes during project loading"
+      ],
+      "agent_performance": "poor",
+      "detected_persona": "impatient"
+    }
+  ],
+  "metadata": {
+    "analyzed_at": "2026-02-23T20:16:21.409647",
+    "total_conversations": 5,
+    "failed_conversations": [],
+    "input_file": "data/chats.json",
+    "analysis_temperature": 0.0
+  }
+}
