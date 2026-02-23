@@ -1,0 +1,109 @@
+{
+  "results": [
+    {
+      "conversation_id": 1,
+      "intent": "refund",
+      "satisfaction": "dissatisfied",
+      "quality_score": 3,
+      "agent_mistakes": [
+        "no_resolution",
+        "unnecessary_escalation",
+        "incomplete_info"
+      ],
+      "resolution_status": "unresolved",
+      "hidden_dissatisfaction_score": 0.8,
+      "key_action_items": [
+        "Process refund immediately",
+        "Provide direct contact to billing team",
+        "Follow up within promised timeframe"
+      ],
+      "agent_performance": "adequate",
+      "detected_persona": "impatient"
+    },
+    {
+      "conversation_id": 2,
+      "intent": "refund",
+      "satisfaction": "neutral",
+      "quality_score": 3,
+      "agent_mistakes": [
+        "incomplete_info",
+        "unnecessary_escalation"
+      ],
+      "resolution_status": "partially_resolved",
+      "hidden_dissatisfaction_score": 0.7,
+      "key_action_items": [
+        "Verify account details and purchase date",
+        "Check refund policy for this specific service",
+        "Process refund if eligible",
+        "Follow up with client on refund status"
+      ],
+      "agent_performance": "adequate",
+      "detected_persona": "hidden_dissatisfied"
+    },
+    {
+      "conversation_id": 3,
+      "intent": "refund",
+      "satisfaction": "dissatisfied",
+      "quality_score": 2,
+      "agent_mistakes": [
+        "incomplete_info",
+        "impatient",
+        "no_resolution"
+      ],
+      "resolution_status": "unresolved",
+      "hidden_dissatisfaction_score": 0.8,
+      "key_action_items": [
+        "Process refund for $50 charge from 15th",
+        "Follow up with client to confirm resolution",
+        "Review agent training on handling frustrated customers"
+      ],
+      "agent_performance": "poor",
+      "detected_persona": "hidden_dissatisfied"
+    },
+    {
+      "conversation_id": 4,
+      "intent": "tech_error",
+      "satisfaction": "dissatisfied",
+      "quality_score": 3,
+      "agent_mistakes": [
+        "tech_jargon",
+        "incomplete_info",
+        "impatient"
+      ],
+      "resolution_status": "unresolved",
+      "hidden_dissatisfaction_score": 0.7,
+      "key_action_items": [
+        "Guide client through uninstall/reinstall process",
+        "Confirm data preservation during reinstall",
+        "Provide login recovery instructions",
+        "Check app compatibility with device",
+        "Escalate to technical team if reinstall fails"
+      ],
+      "agent_performance": "adequate",
+      "detected_persona": "confused"
+    },
+    {
+      "conversation_id": 5,
+      "intent": "refund",
+      "satisfaction": "satisfied",
+      "quality_score": 5,
+      "agent_mistakes": [],
+      "resolution_status": "resolved",
+      "hidden_dissatisfaction_score": 0.0,
+      "key_action_items": [
+        "Process full refund for order 123456789",
+        "Pass customer feedback about customization limitations to product team",
+        "Monitor refund processing time (5-7 business days)"
+      ],
+      "agent_performance": "good",
+      "detected_persona": "friendly"
+    }
+  ],
+  "metadata": {
+    "analyzed_at": "2026-02-23T22:05:32.494087",
+    "total_conversations": 5,
+    "failed_conversations": [],
+    "input_file": "data/chats.json",
+    "analysis_temperature": 0.0
+  }
+}

@@ -5,6 +5,7 @@ services:
       - ./data:/app/data
       - ./.env:/app/.env
     working_dir: /app
-    command: python src/generate.py
     environment:
       - PYTHONPATH=/app
+    command: >
+      sh -c "python src/generate.py && python src/analyze.py"
