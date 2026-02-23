@@ -16,7 +16,6 @@ echo "OPENROUTER_API_KEY=your-api-key-here" > .env
 ```bash
 docker build -t chat-analyzer .
 ```
-### 3. Запуск
 
 #### Запуск генерації діалогів
 ```bash
@@ -28,7 +27,7 @@ docker run -v $(pwd)/data:/app/data chat-analyzer python src/generate.py
 docker run -v $(pwd)/data:/app/data chat-analyzer python src/analyze.py
 ```
 
-#### Або використовувати docker-compose
+### 3. Або використовувати docker-compose
 ```bash
 docker-compose up app
 ```
