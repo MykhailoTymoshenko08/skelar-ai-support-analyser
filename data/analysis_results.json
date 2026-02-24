@@ -1,0 +1,343 @@
+{
+  "results": [
+    {
+      "conversation_id": 1,
+      "intent": "refund",
+      "satisfaction": "satisfied",
+      "quality_score": 5,
+      "agent_mistakes": [],
+      "resolution_status": "partially_resolved",
+      "hidden_dissatisfaction_score": 0.0,
+      "key_action_items": [
+        "Agent to process refund for duplicate charge",
+        "Client to check account daily for refund",
+        "Client to contact bank about temporary credit if needed",
+        "Client to follow up if refund not received by day 5"
+      ],
+      "agent_performance": "good",
+      "detected_persona": "confused"
+    },
+    {
+      "conversation_id": 2,
+      "intent": "tariff",
+      "satisfaction": "hidden_dissatisfaction",
+      "quality_score": 2,
+      "agent_mistakes": [
+        "no_resolution",
+        "incomplete_info",
+        "impatient"
+      ],
+      "resolution_status": "unresolved",
+      "hidden_dissatisfaction_score": 0.85,
+      "key_action_items": [
+        "Address client's underlying frustration directly",
+        "Offer concrete alternatives or adjustments to the basic plan",
+        "Acknowledge the client's time and patience more sincerely",
+        "Provide clear, specific recommendations based on client's needs"
+      ],
+      "agent_performance": "poor",
+      "detected_persona": "hidden_dissatisfied"
+    },
+    {
+      "conversation_id": 3,
+      "intent": "refund",
+      "satisfaction": "neutral",
+      "quality_score": 4,
+      "agent_mistakes": [],
+      "resolution_status": "resolved",
+      "hidden_dissatisfaction_score": 0.7,
+      "key_action_items": [
+        "Send confirmation email with refund details",
+        "Monitor refund processing within 3-5 business days"
+      ],
+      "agent_performance": "good",
+      "detected_persona": "hidden_dissatisfied"
+    },
+    {
+      "conversation_id": 4,
+      "intent": "other",
+      "satisfaction": "hidden_dissatisfaction",
+      "quality_score": 4,
+      "agent_mistakes": [],
+      "resolution_status": "unresolved",
+      "hidden_dissatisfaction_score": 0.7,
+      "key_action_items": [
+        "Review case 123456 thoroughly",
+        "Provide clear update to client",
+        "Address client's concerns about communication",
+        "Follow up to ensure resolution meets client's expectations"
+      ],
+      "agent_performance": "good",
+      "detected_persona": "hidden_dissatisfied"
+    },
+    {
+      "conversation_id": 5,
+      "intent": "refund",
+      "satisfaction": "neutral",
+      "quality_score": 4,
+      "agent_mistakes": [],
+      "resolution_status": "partially_resolved",
+      "hidden_dissatisfaction_score": 0.6,
+      "key_action_items": [
+        "Gather specific details about service shortcomings",
+        "Process refund if service failure is confirmed",
+        "Document client feedback for service improvement"
+      ],
+      "agent_performance": "good",
+      "detected_persona": "hidden_dissatisfied"
+    },
+    {
+      "conversation_id": 6,
+      "intent": "account_access",
+      "satisfaction": "satisfied",
+      "quality_score": 5,
+      "agent_mistakes": [],
+      "resolution_status": "resolved",
+      "hidden_dissatisfaction_score": 0.0,
+      "key_action_items": [],
+      "agent_performance": "good",
+      "detected_persona": "confused"
+    },
+    {
+      "conversation_id": 7,
+      "intent": "tech_error",
+      "satisfaction": "dissatisfied",
+      "quality_score": 3,
+      "agent_mistakes": [
+        "unnecessary_escalation",
+        "incomplete_info",
+        "impatient"
+      ],
+      "resolution_status": "unresolved",
+      "hidden_dissatisfaction_score": 0.8,
+      "key_action_items": [
+        "Escalate to technical team for immediate investigation",
+        "Request client to provide device details and app version",
+        "Follow up with client within 24 hours with update"
+      ],
+      "agent_performance": "adequate",
+      "detected_persona": "impatient"
+    },
+    {
+      "conversation_id": 8,
+      "intent": "other",
+      "satisfaction": "satisfied",
+      "quality_score": 5,
+      "agent_mistakes": [],
+      "resolution_status": "resolved",
+      "hidden_dissatisfaction_score": 0.0,
+      "key_action_items": [
+        "Client to apply recommended notification settings",
+        "Client to adjust email to daily digest",
+        "Client to limit push notifications to critical updates only",
+        "Client to enable in-app alerts at low frequency"
+      ],
+      "agent_performance": "good",
+      "detected_persona": "friendly"
+    },
+    {
+      "conversation_id": 9,
+      "intent": "account_access",
+      "satisfaction": "satisfied",
+      "quality_score": 5,
+      "agent_mistakes": [],
+      "resolution_status": "partially_resolved",
+      "hidden_dissatisfaction_score": 0.0,
+      "key_action_items": [
+        "Check Caps Lock key",
+        "Try primary email address",
+        "Reset password if needed"
+      ],
+      "agent_performance": "good",
+      "detected_persona": "confused"
+    },
+    {
+      "conversation_id": 10,
+      "intent": "refund",
+      "satisfaction": "satisfied",
+      "quality_score": 5,
+      "agent_mistakes": [],
+      "resolution_status": "resolved",
+      "hidden_dissatisfaction_score": 0.0,
+      "key_action_items": [
+        "Process refund",
+        "Follow up with client to confirm refund completion"
+      ],
+      "agent_performance": "good",
+      "detected_persona": "friendly"
+    },
+    {
+      "conversation_id": 11,
+      "intent": "tech_error",
+      "satisfaction": "neutral",
+      "quality_score": 4,
+      "agent_mistakes": [
+        "impatient"
+      ],
+      "resolution_status": "unresolved",
+      "hidden_dissatisfaction_score": 0.7,
+      "key_action_items": [
+        "Clear app cache/data",
+        "Escalate to technical team",
+        "Follow up with client on progress"
+      ],
+      "agent_performance": "adequate",
+      "detected_persona": "hidden_dissatisfied"
+    },
+    {
+      "conversation_id": 12,
+      "intent": "refund",
+      "satisfaction": "dissatisfied",
+      "quality_score": 3,
+      "agent_mistakes": [
+        "no_resolution",
+        "incomplete_info"
+      ],
+      "resolution_status": "partially_resolved",
+      "hidden_dissatisfaction_score": 0.8,
+      "key_action_items": [
+        "Expedite refund process to address client's urgency",
+        "Provide immediate confirmation of refund initiation",
+        "Offer compensation for inconvenience caused by delay"
+      ],
+      "agent_performance": "adequate",
+      "detected_persona": "impatient"
+    },
+    {
+      "conversation_id": 13,
+      "intent": "tech_error",
+      "satisfaction": "satisfied",
+      "quality_score": 5,
+      "agent_mistakes": [],
+      "resolution_status": "resolved",
+      "hidden_dissatisfaction_score": 0.0,
+      "key_action_items": [
+        "Monitor app performance for next 1-2 days",
+        "Document any patterns if crashes return",
+        "Contact agent if issues persist"
+      ],
+      "agent_performance": "good",
+      "detected_persona": "friendly"
+    },
+    {
+      "conversation_id": 14,
+      "intent": "tech_error",
+      "satisfaction": "hidden_dissatisfaction",
+      "quality_score": 3,
+      "agent_mistakes": [
+        "no_resolution",
+        "incomplete_info"
+      ],
+      "resolution_status": "unresolved",
+      "hidden_dissatisfaction_score": 0.8,
+      "key_action_items": [
+        "Verify app version and device compatibility",
+        "Check for known issues with [specific model]",
+        "Request crash logs or diagnostic data",
+        "Offer temporary workaround or alternative solution"
+      ],
+      "agent_performance": "adequate",
+      "detected_persona": "hidden_dissatisfied"
+    },
+    {
+      "conversation_id": 15,
+      "intent": "payment_problem",
+      "satisfaction": "neutral",
+      "quality_score": 4,
+      "agent_mistakes": [],
+      "resolution_status": "unresolved",
+      "hidden_dissatisfaction_score": 0.6,
+      "key_action_items": [
+        "Investigate duplicate charge for $50 on 15th",
+        "Provide client with resolution timeline",
+        "Process refund if duplicate confirmed"
+      ],
+      "agent_performance": "good",
+      "detected_persona": "hidden_dissatisfied"
+    },
+    {
+      "conversation_id": 16,
+      "intent": "tech_error",
+      "satisfaction": "satisfied",
+      "quality_score": 5,
+      "agent_mistakes": [],
+      "resolution_status": "partially_resolved",
+      "hidden_dissatisfaction_score": 0.0,
+      "key_action_items": [
+        "Check for app updates in App Store",
+        "Verify if app is linked to an account",
+        "Reinstall app if updates don't fix the issue"
+      ],
+      "agent_performance": "good",
+      "detected_persona": "friendly"
+    },
+    {
+      "conversation_id": 17,
+      "intent": "tariff",
+      "satisfaction": "dissatisfied",
+      "quality_score": 3,
+      "agent_mistakes": [
+        "tech_jargon",
+        "incomplete_info",
+        "impatient"
+      ],
+      "resolution_status": "unresolved",
+      "hidden_dissatisfaction_score": 0.8,
+      "key_action_items": [
+        "Provide direct link to upgrade page",
+        "Simplify navigation instructions",
+        "Offer alternative upgrade methods (phone/email)"
+      ],
+      "agent_performance": "adequate",
+      "detected_persona": "impatient"
+    },
+    {
+      "conversation_id": 18,
+      "intent": "tariff",
+      "satisfaction": "satisfied",
+      "quality_score": 4,
+      "agent_mistakes": [
+        "incomplete_info"
+      ],
+      "resolution_status": "resolved",
+      "hidden_dissatisfaction_score": 0.2,
+      "key_action_items": [
+        "Send confirmation email with all details",
+        "Clarify contract terms before finalizing"
+      ],
+      "agent_performance": "good",
+      "detected_persona": "impatient"
+    },
+    {
+      "conversation_id": 19,
+      "intent": "other",
+      "satisfaction": "satisfied",
+      "quality_score": 5,
+      "agent_mistakes": [],
+      "resolution_status": "resolved",
+      "hidden_dissatisfaction_score": 0.0,
+      "key_action_items": [],
+      "agent_performance": "good",
+      "detected_persona": "friendly"
+    },
+    {
+      "conversation_id": 20,
+      "intent": "other",
+      "satisfaction": "satisfied",
+      "quality_score": 5,
+      "agent_mistakes": [],
+      "resolution_status": "resolved",
+      "hidden_dissatisfaction_score": 0.0,
+      "key_action_items": [],
+      "agent_performance": "good",
+      "detected_persona": "friendly"
+    }
+  ],
+  "metadata": {
+    "analyzed_at": "2026-02-24T17:55:11.278288",
+    "total_conversations": 20,
+    "failed_conversations": [],
+    "input_file": "data/chats.json",
+    "analysis_temperature": 0.0
+  }
+}

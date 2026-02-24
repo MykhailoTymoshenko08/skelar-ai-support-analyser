@@ -8,4 +8,6 @@ services:
     environment:
       - PYTHONPATH=/app
     command: >
-      sh -c "python src/generate.py && python src/analyze.py"
+      sh -c "rm -f data/chats.json data/analysis_results.json &&
+            python src/generate.py &&
+            python src/analyze.py"

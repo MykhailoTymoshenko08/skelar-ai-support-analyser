@@ -1,20 +1,22 @@
 import json
 import os
+import asyncio
 from typing import List, Dict, Any
 from datetime import datetime
 
 from src.models import AnalysisResult, AnalysisResults, IntentEnum, SatisfactionEnum
-from src.llm_utils import get_llm_response_json
+from src.llm_utils import get_llm_response_json_async
 from src.prompts import ANALYZER_PROMPT_SUMMARY
 
-def load_conversations(filename: str = "data/chats.json") -> List[Dict[str, Any]]:
+async def load_conversations_async(filename: str = "data/chats.json") -> List[Dict[str, Any]]:
     if not os.path.exists(filename):
         print(f"❌ File {filename} not found!")
         return []
     
+    loop = asyncio.get_event_loop()
     with open(filename, 'r', encoding='utf-8') as f:
         try:
-            data = json.load(f)
+            data = await loop.run_in_executor(None, json.load, f)
             print(f"✅ Loaded {len(data)} conversations from {filename}")
             return data
         except json.JSONDecodeError as e:
@@ -29,7 +31,7 @@ def format_conversation_for_analysis(conversation: Dict[str, Any]) -> str:
         formatted.append(f"{role}: {content}")
     return "\n".join(formatted)
 
-def analyze_single_conversation(conversation: Dict[str, Any]) -> Dict[str, Any]:
+async def analyze_single_conversation_async(conversation: Dict[str, Any]) -> Dict[str, Any]:
     conversation_text = format_conversation_for_analysis(conversation)
     
     analysis_prompt = f"""Analyze this customer service conversation:
@@ -51,7 +53,7 @@ Return your analysis as JSON with these fields:
 
 Be precise and objective in your analysis."""
     
-    result = get_llm_response_json(
+    result = await get_llm_response_json_async(
         analysis_prompt,
         temperature=0.0
     )
@@ -90,32 +92,42 @@ def validate_and_create_result(conversation_id: int, analysis_data: Dict[str, An
     
     return result
 
-def analyze_all_conversations(
+async def analyze_all_conversations_async(
     input_file: str = "data/chats.json",
-    output_file: str = "data/analysis_results.json"
+    output_file: str = "data/analysis_results.json",
+    concurrency_limit: int = 10
 ):
     print("🔍 Starting conversation analysis...")
     
-    conversations = load_conversations(input_file)
+    conversations = await load_conversations_async(input_file)
     if not conversations:
         return
     
     results = []
     failed_conversations = []
     
-    for i, conv in enumerate(conversations, 1):
-        print(f"Analyzing conversation {i}/{len(conversations)} (ID: {conv['id']})...")
-        
-        try:
-            analysis_data = analyze_single_conversation(conv)
-            result = validate_and_create_result(conv['id'], analysis_data)
+    semaphore = asyncio.Semaphore(concurrency_limit)
+    
+    async def analyze_with_semaphore(conv):
+        async with semaphore:
+            try:
+                analysis_data = await analyze_single_conversation_async(conv)
+                result = validate_and_create_result(conv['id'], analysis_data)
+                return result, None
+            except Exception as e:
+                return None, (conv['id'], str(e))
+    
+    tasks = [analyze_with_semaphore(conv) for conv in conversations]
+    task_results = await asyncio.gather(*tasks)
+    
+    for i, (result, error) in enumerate(task_results, 1):
+        if result:
             results.append(result)
-            print(f"  ✅ Quality score: {result.quality_score}/5, Satisfaction: {result.satisfaction.value}")
-            
-        except Exception as e:
-            print(f"  ❌ Error analyzing conversation {conv['id']}: {e}")
-            failed_conversations.append(conv['id'])
-            continue
+            print(f"  ✅ Conversation {i}/{len(conversations)}: Quality {result.quality_score}/5, Satisfaction: {result.satisfaction.value}")
+        else:
+            conv_id, error_msg = error
+            failed_conversations.append(conv_id)
+            print(f"  ❌ Conversation {i}/{len(conversations)} (ID: {conv_id}) failed: {error_msg}")
     
     final_results = AnalysisResults(
         results=results,
@@ -124,7 +136,8 @@ def analyze_all_conversations(
             "total_conversations": len(results),
             "failed_conversations": failed_conversations,
             "input_file": input_file,
-            "analysis_temperature": 0.0
+            "analysis_temperature": 0.0,
+            "concurrency_limit": concurrency_limit
         }
     )
     
@@ -153,8 +166,25 @@ def analyze_all_conversations(
         hidden_scores = [r.hidden_dissatisfaction_score for r in results]
         avg_hidden = sum(hidden_scores) / len(hidden_scores)
         print(f"Average hidden dissatisfaction score: {avg_hidden:.2f}")
+        
+        mistake_counts = {}
+        for r in results:
+            for mistake in r.agent_mistakes:
+                mistake_counts[mistake] = mistake_counts.get(mistake, 0) + 1
+        
+        if mistake_counts:
+            print("\nTop agent mistakes:")
+            for mistake, count in sorted(mistake_counts.items(), key=lambda x: x[1], reverse=True)[:3]:
+                print(f"  {mistake}: {count}")
     
     print(f"\n✅ Results saved to: {output_file}")
 
+def analyze_all_conversations(
+    input_file: str = "data/chats.json",
+    output_file: str = "data/analysis_results.json",
+    concurrency_limit: int = 10
+):
+    asyncio.run(analyze_all_conversations_async(input_file, output_file, concurrency_limit))
+
 if __name__ == "__main__":
-    analyze_all_conversations()
+    analyze_all_conversations(concurrency_limit=10)

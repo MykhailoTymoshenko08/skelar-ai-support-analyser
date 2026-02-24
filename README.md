@@ -25,9 +25,12 @@ docker run -v $(pwd)/data:/app/data chat-analyzer python src/generate.py
 #### Запуск аналізу діалогів
 ```bash
 docker run -v $(pwd)/data:/app/data chat-analyzer python src/analyze.py
+
+docker run --env-file .env -v $(pwd)/data:/app/data chat-analyzer python src/analyze.py
 ```
 
 ### 3. Або використовувати docker-compose
 ```bash
+docker-compose build  
 docker-compose up app
 ```
