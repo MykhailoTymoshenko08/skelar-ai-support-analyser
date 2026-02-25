@@ -78,7 +78,7 @@ docker compose run generate
 docker compose run analyze
 ```
 
-> ⚠️ Переконайтесь, що `data/chats.json` існує перед запуском аналізу окремо.
+> Переконайтесь, що `data/chats.json` існує перед запуском аналізу окремо.
 
 ---
 
