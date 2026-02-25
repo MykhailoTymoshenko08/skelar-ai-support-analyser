@@ -1,36 +1,189 @@
 # Customer Service Conversation Generator & Analyzer
 
-## Опис проекту
-Система для генерації та аналізу діалогів між клієнтами та агентами підтримки з використанням LLM через OpenRouter. Проект дозволяє створювати реалістичні діалоги з різними типами клієнтів та аналізувати якість обслуговування, виявляючи приховане незадоволення.
+Система для **генерації та аналізу** діалогів між клієнтами та агентами підтримки з використанням LLM через [OpenRouter](https://openrouter.ai/). Проект дозволяє:
 
-## Як запустити проект через Docker
+- Генерувати реалістичні діалоги з різними типами клієнтів (дружній, нетерплячий, розгублений, приховано незадоволений)
+- Аналізувати якість обслуговування агентів
+- Виявляти приховане незадоволення та сарказм клієнтів
+- Отримувати метрики: intent, satisfaction, quality score, помилки агента тощо
 
-### 1. Підготовка
+---
+
+## Структура проекту
+
+```
+.
+├── src/
+│   ├── generate.py        # Генерація діалогів
+│   ├── analyze.py         # Аналіз діалогів
+│   ├── llm_utils.py       # Утиліти для роботи з LLM
+│   ├── models.py          # Pydantic-моделі
+│   ├── prompts.py         # Системні промпти
+│   └── config.py          # Конфігурація
+├── data/
+│   ├── chats.json         # Згенеровані діалоги (створюється автоматично)
+│   └── analysis_results.json  # Результати аналізу (створюється автоматично)
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+└── .env                   # Ваш API-ключ (треба створити вручну)
+```
+
+---
+
+## Швидкий старт
+
+### 1. Клонування репозиторію
+
 ```bash
 git clone https://github.com/MykhailoTymoshenko08/skelar-ai-support-analyser
 cd skelar-ai-support-analyser
+```
+
+### 2. Налаштування API-ключа
+
+Створіть файл `.env` у корені проекту:
+
+```bash
 echo "OPENROUTER_API_KEY=your-api-key-here" > .env
 ```
 
-### 2. Збірка Docker образу
+> Отримати безкоштовний ключ можна на [openrouter.ai](https://openrouter.ai/keys).
+
+---
+
+## Запуск через Docker Compose (рекомендовано)
+
+### Збірка образу
+
 ```bash
-docker build -t chat-analyzer .
+docker compose build
 ```
 
-#### Запуск генерації діалогів
+### Запуск усього пайплайну (генерація + аналіз)
+
 ```bash
-docker run -v $(pwd)/data:/app/data chat-analyzer python src/generate.py
+docker compose run all
 ```
 
-#### Запуск аналізу діалогів
-```bash
-docker run -v $(pwd)/data:/app/data chat-analyzer python src/analyze.py
+### Тільки генерація діалогів
 
-docker run --env-file .env -v $(pwd)/data:/app/data chat-analyzer python src/analyze.py
+```bash
+docker compose run generate
 ```
 
-### 3. Або використовувати docker-compose
+### Тільки аналіз діалогів
+
 ```bash
-docker-compose build  
-docker-compose up app
+docker compose run analyze
 ```
+
+> ⚠️ Переконайтесь, що `data/chats.json` існує перед запуском аналізу окремо.
+
+---
+
+## Запуск без Docker
+
+### Встановлення залежностей
+
+```bash
+pip install -r requirements.txt
+```
+
+### Генерація діалогів
+
+```bash
+PYTHONPATH=. python src/generate.py
+```
+
+### Аналіз діалогів
+
+```bash
+PYTHONPATH=. python src/analyze.py
+```
+
+---
+
+## Конфігурація
+
+Основні параметри знаходяться у `src/config.py`:
+
+| Параметр | За замовчуванням | Опис |
+|---|---|---|
+| `num_conversations` | `10` | Кількість діалогів для генерації |
+| `max_turns_min` | `3` | Мінімальна кількість реплік у діалозі |
+| `max_turns_max` | `10` | Максимальна кількість реплік у діалозі |
+| `generation_concurrency` | `40` | Паралельних запитів при генерації |
+| `analysis_concurrency` | `10` | Паралельних запитів при аналізі |
+| `default_model` | `arcee-ai/trinity-large-preview:free` | Модель за замовчуванням |
+
+### Доступні моделі (через OpenRouter, безкоштовні)
+
+```python
+arcee_ai     = "arcee-ai/trinity-large-preview:free"
+google_gemini = "google/gemini-2.0-flash-exp:free"
+glm_45_air   = "z-ai/glm-4.5-air:free"
+trinity_mini = "arcee-ai/trinity-mini:free"
+```
+
+---
+
+## Формат вихідних даних
+
+### `data/chats.json` — згенеровані діалоги
+
+```json
+[
+  {
+    "id": 1,
+    "intent": "payment_problem",
+    "client_persona": "impatient",
+    "turns": [
+      { "role": "client", "content": "I was charged twice for my subscription!" },
+      { "role": "agent",  "content": "I'm sorry to hear that. Let me check your account..." }
+    ],
+    "metadata": { "generated_at": "2024-01-01T12:00:00" }
+  }
+]
+```
+
+### `data/analysis_results.json` — результати аналізу
+
+```json
+{
+  "results": [
+    {
+      "conversation_id": 1,
+      "intent": "payment_problem",
+      "satisfaction": "dissatisfied",
+      "quality_score": 3,
+      "agent_mistakes": ["incomplete_info", "tech_jargon"],
+      "resolution_status": "partially_resolved",
+      "hidden_dissatisfaction_score": 0.75,
+      "key_action_items": ["Refund pending confirmation"],
+      "agent_performance": "adequate",
+      "detected_persona": "impatient"
+    }
+  ],
+  "metadata": {
+    "analyzed_at": "2024-01-01T12:05:00",
+    "total_conversations": 10,
+    "failed_conversations": []
+  }
+}
+```
+
+---
+
+## Клієнтські персони
+
+| Персона | Опис |
+|---|---|
+| `friendly` | Терплячий і ввічливий, детально пояснює проблему |
+| `impatient` | Нетерплячий, хоче швидкого вирішення |
+| `confused` | Не розуміє технічних термінів, ставить багато запитань |
+| `hidden_dissatisfied` | Зовні ввічливий, але приховано незадоволений |
+
+## Типи звернень (Intent)
+
+`payment_problem` · `tech_error` · `account_access` · `tariff` · `refund` · `other`

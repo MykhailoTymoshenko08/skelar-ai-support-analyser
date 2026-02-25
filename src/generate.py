@@ -20,6 +20,13 @@ from src.prompts import (
 from src.llm_utils import get_llm_response_async
 from src.models import Conversation, ConversationTurn, IntentEnum
 
+import re
+
+def _strip_role_prefix(text: str) -> str:
+    """Remove role prefixes like 'Client:', 'User:', 'CLIENT:' that LLMs sometimes prepend."""
+    return re.sub(r'^(?:client|user|customer)\s*:\s*["\']?', '', text.strip(), flags=re.IGNORECASE).lstrip('"\'')
+
+
 CLIENT_PERSONAS = {
     "friendly": CLIENT_PROMPT_FRIENDLY,
     "impatient": CLIENT_PROMPT_IMPATIENT,
@@ -78,9 +85,11 @@ async def generate_conversation_async(
 
     client_message = await get_llm_response_async(
         f"{client_persona_prompt}\n\nYou are a client {scenario}.\n"
-        "Generate your FIRST message to customer support. Be natural and in character. Keep it to 1-3 sentences.",
+        "Generate your FIRST message to customer support. Be natural and in character. Keep it to 1-3 sentences.\n"
+        "CRITICAL: Do NOT start your message with 'Client:', 'User:', or any role label. Write only the message itself.",
         temperature=0.7,
     )
+    client_message = _strip_role_prefix(client_message)
     conversation.append({"role": "client", "content": client_message})
 
     for turn in range(max_turns - 1):
@@ -103,9 +112,11 @@ async def generate_conversation_async(
             f"{client_persona_prompt}\n\nYou are the client. Here's the conversation so far:\n{format_conversation(conversation)}\n\n"
             f"Generate your NEXT response as the client. Stay in character and react naturally to what the agent said.\n"
             f"Your issue is about: {scenario}\n"
-            "Keep responding until the issue is resolved or you're satisfied.",
+            "Keep responding until the issue is resolved or you're satisfied.\n"
+            "CRITICAL: Do NOT start your message with 'Client:', 'User:', or any role label. Write only the message itself.",
             temperature=0.7,
         )
+        client_response = _strip_role_prefix(client_response)
         conversation.append({"role": "client", "content": client_response})
 
         if random.random() < 0.15:
@@ -148,7 +159,6 @@ async def generate_single_conversation_async(i: int) -> Dict[str, Any]:
 
 
 def save_all_conversations(conversations: List[Dict[str, Any]], filename: str) -> None:
-    """Зберігає всі розмови за один запис — без повторного читання файлу."""
     os.makedirs(os.path.dirname(filename), exist_ok=True)
 
     existing: List[Dict[str, Any]] = []
@@ -170,7 +180,7 @@ async def generate_dataset_async(
     output_file: str = chats_file,
     concurrency_limit: int = generation_concurrency,
 ) -> None:
-    print(f"🚀 Generating {n} conversations (concurrency={concurrency_limit}, turns={max_turns_min}–{max_turns_max})...")
+    print(f"Generating {n} conversations (concurrency={concurrency_limit}, turns={max_turns_min}–{max_turns_max})...")
 
     semaphore = asyncio.Semaphore(concurrency_limit)
 
@@ -182,11 +192,10 @@ async def generate_dataset_async(
     conversations = await asyncio.gather(*[_generate(i) for i in range(n)])
     elapsed = (datetime.now() - start).total_seconds()
 
-    # Single write instead of N read-modify-write cycles
     save_all_conversations(list(conversations), output_file)
 
     print(f"\n✅ Generated {n} conversations in {elapsed:.1f}s")
-    print(f"📁 Saved to: {output_file}")
+    print(f"Saved to: {output_file}")
 
 
 def generate_dataset(

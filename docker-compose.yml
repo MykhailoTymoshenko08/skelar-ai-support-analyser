@@ -1,5 +1,5 @@
 services:
-  app:
+  app: &base
     build: .
     volumes:
       - ./data:/app/data
@@ -7,7 +7,22 @@ services:
     working_dir: /app
     environment:
       - PYTHONPATH=/app
+
+  generate:
+    <<: *base
+    command: >
+      sh -c "rm -f data/chats.json &&
+             python src/generate.py"
+
+  analyze:
+    <<: *base
+    command: >
+      sh -c "rm -f data/analysis_results.json &&
+             python src/analyze.py"
+
+  all:
+    <<: *base
     command: >
       sh -c "rm -f data/chats.json data/analysis_results.json &&
-            python src/generate.py &&
-            python src/analyze.py"
+             python src/generate.py &&
+             python src/analyze.py"

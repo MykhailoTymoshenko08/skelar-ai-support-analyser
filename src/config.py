@@ -16,10 +16,10 @@ google_gemini = "google/gemini-2.0-flash-exp:free"
 default_model = arcee_ai
 
 #generation settings
-num_conversations: int = 20
+num_conversations: int = 10
 max_turns_min: int = 3
-max_turns_max: int = 8
-generation_concurrency: int = 20 #paralel gen requests
+max_turns_max: int = 10
+generation_concurrency: int = 10 #paralel gen requests
 analysis_concurrency: int = 10 #paralel analys requests
 
 chats_file: str = "data/chats.json"

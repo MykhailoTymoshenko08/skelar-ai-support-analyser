@@ -97,7 +97,7 @@ async def analyze_all_conversations_async(
     output_file: str = "data/analysis_results.json",
     concurrency_limit: int = 10
 ):
-    print("🔍 Starting conversation analysis...")
+    print("Starting conversation analysis...")
     
     conversations = await load_conversations_async(input_file)
     if not conversations:
