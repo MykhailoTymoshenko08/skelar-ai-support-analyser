@@ -177,7 +177,7 @@ $env:PYTHONPATH="."; python src/analyze.py
 | `num_conversations` | `10` | Кількість діалогів для генерації |
 | `max_turns_min` | `3` | Мінімальна кількість реплік у діалозі |
 | `max_turns_max` | `10` | Максимальна кількість реплік у діалозі |
-| `generation_concurrency` | `40` | Паралельних запитів при генерації |
+| `generation_concurrency` | `10` | Паралельних запитів при генерації |
 | `analysis_concurrency` | `10` | Паралельних запитів при аналізі |
 | `default_model` | `arcee-ai/trinity-large-preview:free` | Модель за замовчуванням |
 
