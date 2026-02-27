@@ -59,11 +59,11 @@ async def get_llm_response_async(
             if "429" in error_str or "rate limit" in error_str.lower():
                 if attempt < max_retries - 1:
                     wait_time = (attempt + 1) * 5
-                    print(f"⚠️ Rate limit hit. Retrying in {wait_time}s... (Attempt {attempt + 1}/{max_retries})")
+                    print(f"Rate limit hit. Retrying in {wait_time}s... (Attempt {attempt + 1}/{max_retries})")
                     await asyncio.sleep(wait_time)
                     continue
                 else:
-                    print(f"❌ Max retries reached. Rate limit error: {e}")
+                    print(f"Max retries reached. Rate limit error: {e}")
             else:
                 print(f"Error getting LLM response: {e}")
             
@@ -130,6 +130,8 @@ def parse_json_response(response: str) -> Dict[str, Any]:
         except Exception:
             pass
         return {}
+    
+#vov add async llm response 
 
 async def get_llm_response_json_async(
     prompt: Union[str, List[Union[str, dict]]],

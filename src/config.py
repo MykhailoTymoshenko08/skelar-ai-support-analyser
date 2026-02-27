@@ -39,7 +39,6 @@ intent_choices = [
     intent.account_access,
     intent.tariff,
     intent.refund,
-    intent.other
 ]
 
 hidden_dissatisfaction_keywords = [

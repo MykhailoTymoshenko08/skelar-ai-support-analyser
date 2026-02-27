@@ -1,102 +1,102 @@
 # Customer Service Conversation Generator & Analyzer
 
-Система для **генерації та аналізу** діалогів між клієнтами та агентами підтримки з використанням LLM через [OpenRouter](https://openrouter.ai/). Проект дозволяє:
+A system for **generating and analyzing** dialogues between customers and support agents using LLM via [OpenRouter](https://openrouter.ai/). The project allows you to:
 
-- Генерувати реалістичні діалоги з різними типами клієнтів (дружній, нетерплячий, розгублений, приховано незадоволений)
-- Аналізувати якість обслуговування агентів
-- Виявляти приховане незадоволення та сарказм клієнтів
-- Отримувати метрики: intent, satisfaction, quality score, помилки агента тощо
+- Generate realistic dialogues with different client types (friendly, impatient, confused, hidden_dissatisfied)
+- Analyze the quality of agent service
+- Detect hidden dissatisfaction and sarcasm in client messages
+- Obtain metrics: intent, satisfaction, quality score, agent mistakes, and more
 
 ---
 
-## Структура проекту
+## Project Structure
 
 ```
 .
 ├── src/
-│   ├── generate.py        # Генерація діалогів
-│   ├── analyze.py         # Аналіз діалогів
-│   ├── llm_utils.py       # Утиліти для роботи з LLM
-│   ├── models.py          # Pydantic-моделі
-│   ├── prompts.py         # Системні промпти
-│   └── config.py          # Конфігурація
+│   ├── generate.py        # Dialogue generation
+│   ├── analyze.py         # Dialogue analysis
+│   ├── llm_utils.py       # LLM utility functions
+│   ├── models.py          # Pydantic models
+│   ├── prompts.py         # System prompts
+│   └── config.py          # Configuration
 ├── data/
-│   ├── chats.json         # Згенеровані діалоги (створюється автоматично)
-│   └── analysis_results.json  # Результати аналізу (створюється автоматично)
+│   ├── chats.json         # Generated dialogues (created automatically)
+│   └── analysis_results.json  # Analysis results (created automatically)
 ├── Dockerfile
 ├── docker-compose.yml
 ├── requirements.txt
-└── .env                   # Ваш API-ключ (треба створити вручну)
+└── .env                   # Your API key (must be created manually)
 ```
 
 ---
 
-## Швидкий старт
+## Quick Start
 
-### 1. Клонування репозиторію
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/MykhailoTymoshenko08/skelar-ai-support-analyser
 cd skelar-ai-support-analyser
 ```
 
-### 2. Налаштування API-ключа
+### 2. Configure the API key
 
-Створіть файл `.env` у корені проекту:
+Create a `.env` file in the project root:
 
 ```bash
 echo "OPENROUTER_API_KEY=your-api-key-here" > .env
 ```
 
-> Отримати безкоштовний ключ можна на [openrouter.ai](https://openrouter.ai/keys).
+> Get a free key at [openrouter.ai](https://openrouter.ai/keys).
 
 ---
 
-## Запуск через Docker Compose (рекомендовано)
+## Running with Docker Compose (recommended)
 
-### Збірка образу
+### Build the image
 
 ```bash
 docker compose build
 ```
 
-### Запуск усього пайплайну (генерація + аналіз)
+### Run the full pipeline (generation + analysis)
 
 ```bash
 docker compose run all
 ```
 
-### Тільки генерація діалогів
+### Generation only
 
 ```bash
 docker compose run generate
 ```
 
-### Тільки аналіз діалогів
+### Analysis only
 
 ```bash
 docker compose run analyze
 ```
 
-> Переконайтесь, що `data/chats.json` існує перед запуском аналізу окремо.
+> Make sure `data/chats.json` exists before running analysis separately.
 
 ---
 
-## Запуск без Docker
+## Running without Docker
 
-### Встановлення залежностей
+### Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Генерація діалогів
+### Generate dialogues
 
 ```bash
 PYTHONPATH=. python src/generate.py
 ```
 
-### Аналіз діалогів
+### Analyze dialogues
 
 ```bash
 PYTHONPATH=. python src/analyze.py
@@ -104,33 +104,33 @@ PYTHONPATH=. python src/analyze.py
 
 ---
 
-## Конфігурація
+## Configuration
 
-Основні параметри знаходяться у `src/config.py`:
+The main parameters are located in `src/config.py`:
 
-| Параметр | За замовчуванням | Опис |
+| Parameter | Default | Description |
 |---|---|---|
-| `num_conversations` | `10` | Кількість діалогів для генерації |
-| `max_turns_min` | `3` | Мінімальна кількість реплік у діалозі |
-| `max_turns_max` | `10` | Максимальна кількість реплік у діалозі |
-| `generation_concurrency` | `40` | Паралельних запитів при генерації |
-| `analysis_concurrency` | `10` | Паралельних запитів при аналізі |
-| `default_model` | `arcee-ai/trinity-large-preview:free` | Модель за замовчуванням |
+| `num_conversations` | `10` | Number of dialogues to generate |
+| `max_turns_min` | `3` | Minimum number of turns per dialogue |
+| `max_turns_max` | `10` | Maximum number of turns per dialogue |
+| `generation_concurrency` | `40` | Parallel requests during generation |
+| `analysis_concurrency` | `10` | Parallel requests during analysis |
+| `default_model` | `arcee-ai/trinity-large-preview:free` | Default model |
 
-### Доступні моделі (через OpenRouter, безкоштовні)
+### Available models (via OpenRouter, free)
 
 ```python
-arcee_ai     = "arcee-ai/trinity-large-preview:free"
+arcee_ai      = "arcee-ai/trinity-large-preview:free"
 google_gemini = "google/gemini-2.0-flash-exp:free"
-glm_45_air   = "z-ai/glm-4.5-air:free"
-trinity_mini = "arcee-ai/trinity-mini:free"
+glm_45_air    = "z-ai/glm-4.5-air:free"
+trinity_mini  = "arcee-ai/trinity-mini:free"
 ```
 
 ---
 
-## Формат вихідних даних
+## Output Data Formats
 
-### `data/chats.json` — згенеровані діалоги
+### `data/chats.json` — generated dialogues
 
 ```json
 [
@@ -147,7 +147,7 @@ trinity_mini = "arcee-ai/trinity-mini:free"
 ]
 ```
 
-### `data/analysis_results.json` — результати аналізу
+### `data/analysis_results.json` — analysis results
 
 ```json
 {
@@ -175,15 +175,15 @@ trinity_mini = "arcee-ai/trinity-mini:free"
 
 ---
 
-## Клієнтські персони
+## Client Personas
 
-| Персона | Опис |
+| Persona | Description |
 |---|---|
-| `friendly` | Терплячий і ввічливий, детально пояснює проблему |
-| `impatient` | Нетерплячий, хоче швидкого вирішення |
-| `confused` | Не розуміє технічних термінів, ставить багато запитань |
-| `hidden_dissatisfied` | Зовні ввічливий, але приховано незадоволений |
+| `friendly` | Patient and polite, explains the problem in detail |
+| `impatient` | Impatient, wants a quick resolution |
+| `confused` | Does not understand technical terms, asks many questions |
+| `hidden_dissatisfied` | Outwardly polite but covertly dissatisfied |
 
-## Типи звернень (Intent)
+## Intent Types
 
 `payment_problem` · `tech_error` · `account_access` · `tariff` · `refund` · `other`

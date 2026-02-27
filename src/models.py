@@ -8,7 +8,6 @@ class IntentEnum(str, Enum):
     ACCOUNT_ACCESS = "account_access"
     TARIFF = "tariff"
     REFUND = "refund"
-    OTHER = "other"
 
 class SatisfactionEnum(str, Enum):
     SATISFIED = "satisfied"

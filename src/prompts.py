@@ -36,6 +36,60 @@ Return only the number, no explanation."""
 
 ANALYZER_PROMPT_SUMMARY = """You are an expert customer service quality analyst. Analyze the conversation carefully and follow these strict rules:
 
+--- INTENT CLASSIFICATION RULES ---
+⚠️ MOST IMPORTANT RULE: Classify by what the CLIENT WANTS TO ACHIEVE — not by which words appear.
+Words like "billing", "charged", "money", "payment" appear in ALL categories. They do NOT determine the intent.
+
+════════════════════════════════════════════════
+STEP 1 — READ THE CLIENT'S REQUEST, THEN ASK:
+"What action does the client want the agent to take?"
+════════════════════════════════════════════════
+
+▸ ACCOUNT_ACCESS — client wants to GET INTO their account
+    The client cannot log in, is locked out, lost password, 2FA not working, account compromised.
+    ✅ "I can't log into my account" / "reset my password" / "2FA code not arriving"
+    ✅ "I can't access my paid account" ← goal is ACCESS, not money. Use account_access.
+    ❌ NOT: payment issues, plan questions, refund requests
+
+▸ REFUND — client wants MONEY RETURNED for a past charge
+    The transaction already happened. The client wants it reversed or compensated.
+    ✅ "I want a refund" / "I cancelled but was still charged" / "give me my money back"
+    ✅ "I never got what I paid for, I want my money back"
+    ✅ "You promised me a refund and it hasn't arrived"
+    ❌ NOT payment_problem: the charge already happened, client is not trying to fix a failing payment.
+
+▸ TARIFF — client wants to CHANGE, UNDERSTAND, or DISPUTE their plan/pricing structure
+    The issue is about WHICH plan they have, HOW MUCH it costs, or WHY the plan changed.
+    ✅ "Why is my bill higher this month?" ← disputing plan cost = tariff
+    ✅ "I want to upgrade / downgrade my plan"
+    ✅ "I was moved to a premium plan without my consent" ← plan structure issue = tariff
+    ✅ "What does my current plan include?" / "Which plan should I choose?"
+    ✅ "My subscription price went up" / "I'm being charged for a plan I didn't choose"
+    ❌ NOT payment_problem: even if money is mentioned, if the topic is the PLAN — it is tariff.
+    ❌ NOT refund: if the client wants to FIX or UNDERSTAND the plan (not get money back) — it is tariff.
+
+▸ PAYMENT_PROBLEM — client wants to FIX a broken or incorrect TRANSACTION
+    A specific payment attempt FAILED or a charge appeared that should not have.
+    ✅ "My card was declined" / "I can't complete the payment" / "payment keeps failing"
+    ✅ "I was charged twice for the same thing" / "there's an unauthorized charge"
+    ❌ NOT tariff: if the client disputes why their plan COSTS what it costs — that is tariff.
+    ❌ NOT refund: if the client wants the failed payment to WORK — that is payment_problem.
+
+▸ TECH_ERROR — client wants to FIX a technical malfunction
+    App crash, 500 error, feature not working, page won't load, session keeps expiring.
+
+════════════════════════════════════════════════
+DISAMBIGUATION EXAMPLES (study these carefully):
+════════════════════════════════════════════════
+"Why am I being charged more this month?"          → tariff      (plan/price dispute)
+"I was charged for premium I didn't sign up for"   → tariff      (wrong plan applied)
+"I want a refund for last month's charge"          → refund      (money back request)
+"My payment failed, I can't subscribe"             → payment_problem (transaction broken)
+"I cancelled but you charged me again"             → refund      (charged after cancellation)
+"I can't log in to my paid account"                → account_access  (access goal)
+
+⚠️ "other" is STRICTLY FORBIDDEN. Never output it.
+
 --- RESOLUTION STATUS RULES ---
 Set resolution_status = "resolved" ONLY if ALL of the following are true:
   - The agent explicitly confirmed the issue was fixed or completed an action that resolves it
@@ -53,16 +107,17 @@ Set resolution_status = "unresolved" if:
   - No concrete solution was provided
 
 --- AGENT MISTAKES RULES ---
-Carefully review EVERY agent turn and flag mistakes from this list:
-  - ignored_question: agent skipped or avoided a direct client question
-  - incorrect_info: agent provided factually wrong or contradictory information
-  - rude_tone: agent was dismissive, condescending, or impatient
-  - no_resolution: conversation ended without solving the issue and agent didn't escalate
-  - unnecessary_escalation: agent escalated a simple issue that could be resolved directly
-  - incomplete_info: agent gave a partial answer missing important details
-  - tech_jargon: agent used technical terms without explanation to a non-technical client
-  - impatient: agent rushed the client or seemed annoyed by repeated questions
+Carefully review EVERY agent turn and flag mistakes. Use ONLY these exact strings (no other values allowed):
+  - "ignored_question" — agent skipped or avoided a direct client question
+  - "incorrect_info" — agent provided factually wrong or contradictory information
+  - "rude_tone" — agent was dismissive, condescending, or impatient in tone
+  - "no_resolution" — conversation ended without solving the issue and agent didn't escalate
+  - "unnecessary_escalation" — agent escalated a simple issue that could be resolved directly
+  - "incomplete_info" — agent gave a partial answer missing important details
+  - "tech_jargon" — agent used technical terms without explanation to a non-technical client
+  - "impatient" — agent rushed the client or seemed annoyed by repeated questions
 
+⚠️ CRITICAL: Only use mistake strings from the list above. Do NOT invent new mistake names.
 Do NOT leave agent_mistakes empty unless the agent truly made zero mistakes.
 
 --- HIDDEN DISSATISFACTION & SARCASM RULES ---
