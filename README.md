@@ -82,25 +82,89 @@ docker compose run analyze
 
 ---
 
-## Running without Docker
+## Running without Docker — macOS
+
+### Prerequisites
+
+Make sure Python 3.8+ is installed:
+
+```bash
+python3 --version
+```
+
+If not installed, download it from [python.org](https://www.python.org/downloads/) or use Homebrew:
+
+```bash
+brew install python
+```
 
 ### Install dependencies
 
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 ### Generate dialogues
 
 ```bash
-PYTHONPATH=. python src/generate.py
+PYTHONPATH=. python3 src/generate.py
 ```
 
 ### Analyze dialogues
 
 ```bash
-PYTHONPATH=. python src/analyze.py
+PYTHONPATH=. python3 src/analyze.py
 ```
+
+> **Note:** Do not use `python` or `pip` without the `3` suffix on Mac — they either point to Python 2 or don't exist at all on macOS Catalina and later.
+
+---
+
+## Running without Docker — Windows
+
+### Prerequisites
+
+Make sure Python 3.8+ is installed. Download it from [python.org](https://www.python.org/downloads/).
+
+During installation, check **"Add Python to PATH"** — this is required for the commands below to work.
+
+Verify after installation (in Command Prompt or PowerShell):
+
+```cmd
+python --version
+```
+
+### Install dependencies
+
+```cmd
+pip install -r requirements.txt
+```
+
+### Set PYTHONPATH and generate dialogues
+
+**Command Prompt:**
+```cmd
+set PYTHONPATH=. && python src/generate.py
+```
+
+**PowerShell:**
+```powershell
+$env:PYTHONPATH="."; python src/generate.py
+```
+
+### Set PYTHONPATH and analyze dialogues
+
+**Command Prompt:**
+```cmd
+set PYTHONPATH=. && python src/analyze.py
+```
+
+**PowerShell:**
+```powershell
+$env:PYTHONPATH="."; python src/analyze.py
+```
+
+> **Note:** Windows does not support the `PYTHONPATH=. python ...` syntax used on Mac/Linux. You must set the environment variable separately using `set` (CMD) or `$env:` (PowerShell) as shown above.
 
 ---
 
@@ -113,7 +177,7 @@ The main parameters are located in `src/config.py`:
 | `num_conversations` | `10` | Number of dialogues to generate |
 | `max_turns_min` | `3` | Minimum number of turns per dialogue |
 | `max_turns_max` | `10` | Maximum number of turns per dialogue |
-| `generation_concurrency` | `10` | Parallel requests during generation |
+| `generation_concurrency` | `40` | Parallel requests during generation |
 | `analysis_concurrency` | `10` | Parallel requests during analysis |
 | `default_model` | `arcee-ai/trinity-large-preview:free` | Default model |
 
@@ -186,4 +250,4 @@ trinity_mini  = "arcee-ai/trinity-mini:free"
 
 ## Intent Types
 
-`payment_problem` · `tech_error` · `account_access` · `tariff` · `refund` · `other`
+`payment_problem` · `tech_error` · `account_access` · `tariff` · `refund` 

@@ -1,15 +1,15 @@
 # Customer Service Conversation Generator & Analyzer
 
-Система для **генерації та аналізу** діалогів між клієнтами та агентами підтримки з використанням LLM через [OpenRouter](https://openrouter.ai/). Проект дозволяє:
+Система для **генерації та аналізу** діалогів між клієнтами та агентами підтримки з використанням LLM через [OpenRouter](https://openrouter.ai/). Проєкт дозволяє:
 
-- Генерувати реалістичні діалоги з різними типами клієнтів (дружній, нетерплячий, розгублений, приховано незадоволений)
+- Генерувати реалістичні діалоги з різними типами клієнтів (friendly, impatient, confused, hidden_dissatisfied)
 - Аналізувати якість обслуговування агентів
 - Виявляти приховане незадоволення та сарказм клієнтів
 - Отримувати метрики: intent, satisfaction, quality score, помилки агента тощо
 
 ---
 
-## Структура проекту
+## Структура проєкту
 
 ```
 .
@@ -42,7 +42,7 @@ cd skelar-ai-support-analyser
 
 ### 2. Налаштування API-ключа
 
-Створіть файл `.env` у корені проекту:
+Створіть файл `.env` у корені проєкту:
 
 ```bash
 echo "OPENROUTER_API_KEY=your-api-key-here" > .env
@@ -82,25 +82,89 @@ docker compose run analyze
 
 ---
 
-## Запуск без Docker
+## Запуск без Docker — macOS
+
+### Вимоги
+
+Перевірте, що встановлено Python 3.8+:
+
+```bash
+python3 --version
+```
+
+Якщо не встановлено — завантажте з [python.org](https://www.python.org/downloads/) або через Homebrew:
+
+```bash
+brew install python
+```
 
 ### Встановлення залежностей
 
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 ### Генерація діалогів
 
 ```bash
-PYTHONPATH=. python src/generate.py
+PYTHONPATH=. python3 src/generate.py
 ```
 
 ### Аналіз діалогів
 
 ```bash
-PYTHONPATH=. python src/analyze.py
+PYTHONPATH=. python3 src/analyze.py
 ```
+
+> **Важливо:** На Mac не використовуйте `python` або `pip` без суфікса `3` — починаючи з macOS Catalina вони або вказують на Python 2, або взагалі відсутні.
+
+---
+
+## Запуск без Docker — Windows
+
+### Вимоги
+
+Встановіть Python 3.8+ з [python.org](https://www.python.org/downloads/).
+
+Під час встановлення обов'язково поставте галочку **"Add Python to PATH"** — без цього команди нижче не працюватимуть.
+
+Перевірте після встановлення (у Command Prompt або PowerShell):
+
+```cmd
+python --version
+```
+
+### Встановлення залежностей
+
+```cmd
+pip install -r requirements.txt
+```
+
+### Встановлення PYTHONPATH та генерація діалогів
+
+**Command Prompt:**
+```cmd
+set PYTHONPATH=. && python src/generate.py
+```
+
+**PowerShell:**
+```powershell
+$env:PYTHONPATH="."; python src/generate.py
+```
+
+### Встановлення PYTHONPATH та аналіз діалогів
+
+**Command Prompt:**
+```cmd
+set PYTHONPATH=. && python src/analyze.py
+```
+
+**PowerShell:**
+```powershell
+$env:PYTHONPATH="."; python src/analyze.py
+```
+
+> **Важливо:** Windows не підтримує синтаксис `PYTHONPATH=. python ...`, який використовується на Mac/Linux. Змінну середовища потрібно задавати окремо — через `set` у CMD або `$env:` у PowerShell, як показано вище.
 
 ---
 
@@ -113,17 +177,17 @@ PYTHONPATH=. python src/analyze.py
 | `num_conversations` | `10` | Кількість діалогів для генерації |
 | `max_turns_min` | `3` | Мінімальна кількість реплік у діалозі |
 | `max_turns_max` | `10` | Максимальна кількість реплік у діалозі |
-| `generation_concurrency` | `10` | Паралельних запитів при генерації |
+| `generation_concurrency` | `40` | Паралельних запитів при генерації |
 | `analysis_concurrency` | `10` | Паралельних запитів при аналізі |
 | `default_model` | `arcee-ai/trinity-large-preview:free` | Модель за замовчуванням |
 
 ### Доступні моделі (через OpenRouter, безкоштовні)
 
 ```python
-arcee_ai     = "arcee-ai/trinity-large-preview:free"
+arcee_ai      = "arcee-ai/trinity-large-preview:free"
 google_gemini = "google/gemini-2.0-flash-exp:free"
-glm_45_air   = "z-ai/glm-4.5-air:free"
-trinity_mini = "arcee-ai/trinity-mini:free"
+glm_45_air    = "z-ai/glm-4.5-air:free"
+trinity_mini  = "arcee-ai/trinity-mini:free"
 ```
 
 ---
@@ -186,4 +250,4 @@ trinity_mini = "arcee-ai/trinity-mini:free"
 
 ## Типи звернень (Intent)
 
-`payment_problem` · `tech_error` · `account_access` · `tariff` · `refund` · `other`
+`payment_problem` · `tech_error` · `account_access` · `tariff` · `refund`
