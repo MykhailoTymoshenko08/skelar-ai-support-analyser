@@ -252,10 +252,10 @@ PYTHONPATH=. python src/analyze.py
 
 | Параметр | Тип | За замовчуванням | Опис |
 |---|---|---|---|
-| `num_conversations` | int | 200 | Кількість діалогів для генерації |
+| `num_conversations` | int | 10 | Кількість діалогів для генерації |
 | `max_turns_min` | int | 3 | Мінімальна кількість реплік у діалозі |
 | `max_turns_max` | int | 10 | Максимальна кількість реплік у діалозі |
-| `generation_concurrency` | int | 40 | Паралельних запитів при генерації |
+| `generation_concurrency` | int | 10 | Паралельних запитів при генерації |
 | `analysis_concurrency` | int | 40 | Паралельних запитів при аналізі |
 
 ### Параметри моделі
@@ -787,7 +787,7 @@ docker compose run all
 
 **Рішення 1:** Зменшити конкурентність у `config.py`:
 ```python
-generation_concurrency = 10  # замість 40
+generation_concurrency = 5  # замість 10
 analysis_concurrency   = 10
 ```
 

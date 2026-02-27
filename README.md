@@ -113,7 +113,7 @@ The main parameters are located in `src/config.py`:
 | `num_conversations` | `10` | Number of dialogues to generate |
 | `max_turns_min` | `3` | Minimum number of turns per dialogue |
 | `max_turns_max` | `10` | Maximum number of turns per dialogue |
-| `generation_concurrency` | `40` | Parallel requests during generation |
+| `generation_concurrency` | `10` | Parallel requests during generation |
 | `analysis_concurrency` | `10` | Parallel requests during analysis |
 | `default_model` | `arcee-ai/trinity-large-preview:free` | Default model |
 
