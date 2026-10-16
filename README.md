@@ -1,253 +1,105 @@
-# Customer Service Conversation Generator & Analyzer
+# Support Conversation Generator & Analyzer
 
-A system for **generating and analyzing** dialogues between customers and support agents using LLM via [OpenRouter](https://openrouter.ai/). The project allows you to:
+> LLM pipeline built for the **SKELAR Case Challenge 2.0**. Part one **generates** realistic customer-support dialogues with controllable client personas and agent mistakes. Part two **analyzes** each dialogue: intent, satisfaction, hidden dissatisfaction (sarcasm, passive aggression), agent mistakes and a 1–5 quality score — with deterministic guardrails on top of the model.
 
-- Generate realistic dialogues with different client types (friendly, impatient, confused, hidden_dissatisfied)
-- Analyze the quality of agent service
-- Detect hidden dissatisfaction and sarcasm in client messages
-- Obtain metrics: intent, satisfaction, quality score, agent mistakes, and more
+![Python](https://img.shields.io/badge/Python-3670A0?style=flat-square&logo=python&logoColor=ffdd54)
+![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=flat-square&logo=langchain&logoColor=white)
+![Pydantic](https://img.shields.io/badge/Pydantic-E92063?style=flat-square&logo=pydantic&logoColor=white)
+![asyncio](https://img.shields.io/badge/asyncio-concurrency-3670A0?style=flat-square)
+![OpenRouter](https://img.shields.io/badge/OpenRouter-6566F1?style=flat-square)
+![Docker](https://img.shields.io/badge/Docker-0db7ed?style=flat-square&logo=docker&logoColor=white)
 
----
-
-## Project Structure
-
-```
-.
-├── src/
-│   ├── generate.py        # Dialogue generation
-│   ├── analyze.py         # Dialogue analysis
-│   ├── llm_utils.py       # LLM utility functions
-│   ├── models.py          # Pydantic models
-│   ├── prompts.py         # System prompts
-│   └── config.py          # Configuration
-├── data/
-│   ├── chats.json         # Generated dialogues (created automatically)
-│   └── analysis_results.json  # Analysis results (created automatically)
-├── Dockerfile
-├── docker-compose.yml
-├── requirements.txt
-└── .env                   # Your API key (must be created manually)
-```
+📖 Detailed documentation (Ukrainian): [`project-documentation.md`](project-documentation.md) · [`README_ukr.md`](README_ukr.md)
 
 ---
 
-## Quick Start
+## Pipeline
 
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/MykhailoTymoshenko08/skelar-ai-support-analyser
-cd skelar-ai-support-analyser
+```mermaid
+flowchart LR
+    subgraph Generate
+      S[Scenario × intent<br/>+ urgency context] --> C[Client LLM<br/>persona, T=0.8]
+      C <--> A[Agent LLM<br/>T=0.5, 30% mistake hint]
+    end
+    A --> D[(data/chats.json)]
+    D --> L[Analyzer LLM<br/>T=0.0]
+    subgraph Analyze
+      L --> G[Guardrails<br/>enum mapping · consistency · filtering]
+      G --> V[Pydantic validation]
+    end
+    V --> R[(data/analysis_results.json)]
 ```
 
-### 2. Configure the API key
+## Generation — controllable synthetic data
 
-Create a `.env` file in the project root:
+| Lever | How it's used |
+|---|---|
+| **5 intents** | `payment_problem`, `tech_error`, `account_access`, `tariff`, `refund` — 4 scenarios each |
+| **4 personas** | `friendly`, `impatient`, `confused`, `hidden_dissatisfied` (outwardly polite, passive-aggressive) |
+| **Urgency** | ~50% of dialogues get pressure context ("card declined at the checkout right now") |
+| **Agent mistakes** | 30% of dialogues prompt the agent to slip: jargon, incomplete info, impatience |
+| **Temperature split** | client 0.8 for emotional variety, agent 0.5 for stable replies |
+| **Length** | 3–10 turns with random early exits; the dialogue always ends with the agent |
 
-```bash
-echo "OPENROUTER_API_KEY=your-api-key-here" > .env
-```
+## Analysis — LLM + guardrails
 
-> Get a free key at [openrouter.ai](https://openrouter.ai/keys).
-
----
-
-## Running with Docker Compose (recommended)
-
-### Build the image
-
-```bash
-docker compose build
-```
-
-### Run the full pipeline (generation + analysis)
-
-```bash
-docker compose run all
-```
-
-### Generation only
-
-```bash
-docker compose run generate
-```
-
-### Analysis only
-
-```bash
-docker compose run analyze
-```
-
-> Make sure `data/chats.json` exists before running analysis separately.
-
----
-
-## Running without Docker — macOS
-
-### Prerequisites
-
-Make sure Python 3.8+ is installed:
-
-```bash
-python3 --version
-```
-
-If not installed, download it from [python.org](https://www.python.org/downloads/) or use Homebrew:
-
-```bash
-brew install python
-```
-
-### Install dependencies
-
-```bash
-pip3 install -r requirements.txt
-```
-
-### Generate dialogues
-
-```bash
-PYTHONPATH=. python3 src/generate.py
-```
-
-### Analyze dialogues
-
-```bash
-PYTHONPATH=. python3 src/analyze.py
-```
-
-> **Note:** Do not use `python` or `pip` without the `3` suffix on Mac — they either point to Python 2 or don't exist at all on macOS Catalina and later.
-
----
-
-## Running without Docker — Windows
-
-### Prerequisites
-
-Make sure Python 3.8+ is installed. Download it from [python.org](https://www.python.org/downloads/).
-
-During installation, check **"Add Python to PATH"** — this is required for the commands below to work.
-
-Verify after installation (in Command Prompt or PowerShell):
-
-```cmd
-python --version
-```
-
-### Install dependencies
-
-```cmd
-pip install -r requirements.txt
-```
-
-### Set PYTHONPATH and generate dialogues
-
-**Command Prompt:**
-```cmd
-set PYTHONPATH=. && python src/generate.py
-```
-
-**PowerShell:**
-```powershell
-$env:PYTHONPATH="."; python src/generate.py
-```
-
-### Set PYTHONPATH and analyze dialogues
-
-**Command Prompt:**
-```cmd
-set PYTHONPATH=. && python src/analyze.py
-```
-
-**PowerShell:**
-```powershell
-$env:PYTHONPATH="."; python src/analyze.py
-```
-
-> **Note:** Windows does not support the `PYTHONPATH=. python ...` syntax used on Mac/Linux. You must set the environment variable separately using `set` (CMD) or `$env:` (PowerShell) as shown above.
-
----
-
-## Configuration
-
-The main parameters are located in `src/config.py`:
-
-| Parameter | Default | Description |
-|---|---|---|
-| `num_conversations` | `10` | Number of dialogues to generate |
-| `max_turns_min` | `3` | Minimum number of turns per dialogue |
-| `max_turns_max` | `10` | Maximum number of turns per dialogue |
-| `generation_concurrency` | `10` | Parallel requests during generation |
-| `analysis_concurrency` | `10` | Parallel requests during analysis |
-| `default_model` | `arcee-ai/trinity-large-preview:free` | Default model |
-
-### Available models (via OpenRouter, free)
-
-```python
-arcee_ai      = "arcee-ai/trinity-large-preview:free"
-google_gemini = "google/gemini-2.0-flash-exp:free"
-glm_45_air    = "z-ai/glm-4.5-air:free"
-trinity_mini  = "arcee-ai/trinity-mini:free"
-```
-
----
-
-## Output Data Formats
-
-### `data/chats.json` — generated dialogues
-
-```json
-[
-  {
-    "id": 1,
-    "intent": "payment_problem",
-    "client_persona": "impatient",
-    "turns": [
-      { "role": "client", "content": "I was charged twice for my subscription!" },
-      { "role": "agent",  "content": "I'm sorry to hear that. Let me check your account..." }
-    ],
-    "metadata": { "generated_at": "2024-01-01T12:00:00" }
-  }
-]
-```
-
-### `data/analysis_results.json` — analysis results
+Every dialogue is scored at `temperature=0.0` into a validated schema:
 
 ```json
 {
-  "results": [
-    {
-      "conversation_id": 1,
-      "intent": "payment_problem",
-      "satisfaction": "dissatisfied",
-      "quality_score": 3,
-      "agent_mistakes": ["incomplete_info", "tech_jargon"],
-      "resolution_status": "partially_resolved",
-      "hidden_dissatisfaction_score": 0.75,
-      "key_action_items": ["Refund pending confirmation"],
-      "agent_performance": "adequate",
-      "detected_persona": "impatient"
-    }
-  ],
-  "metadata": {
-    "analyzed_at": "2024-01-01T12:05:00",
-    "total_conversations": 10,
-    "failed_conversations": []
-  }
+  "conversation_id": 1,
+  "intent": "payment_problem",
+  "satisfaction": "hidden_dissatisfaction",
+  "quality_score": 3,
+  "agent_mistakes": ["incomplete_info", "tech_jargon"],
+  "resolution_status": "partially_resolved",
+  "hidden_dissatisfaction_score": 0.75,
+  "key_action_items": ["Refund pending confirmation"],
+  "agent_performance": "adequate",
+  "detected_persona": "impatient"
 }
 ```
 
----
+Models are good at the hard part and sloppy at the boring part, so three deterministic guardrails fix the output after the LLM:
 
-## Client Personas
+1. **Intent resolution** — unknown labels (`billing`, `login`, …) are mapped to the closest allowed intent.
+2. **Consistency rule** — the model often detects sarcasm numerically (`hidden_dissatisfaction_score = 0.8`) but still labels the dialogue `neutral`. If the score is above **0.5**, the label is overridden to `hidden_dissatisfaction`.
+3. **Mistake filtering** — invented mistake names (`bad_attitude`) are dropped; only the 8 allowed categories survive.
 
-| Persona | Description |
-|---|---|
-| `friendly` | Patient and polite, explains the problem in detail |
-| `impatient` | Impatient, wants a quick resolution |
-| `confused` | Does not understand technical terms, asks many questions |
-| `hidden_dissatisfied` | Outwardly polite but covertly dissatisfied |
+Pydantic then enforces ranges (`quality_score` 1–5, score 0–1).
 
-## Intent Types
+## Reliability & speed
 
-`payment_problem` · `tech_error` · `account_access` · `tariff` · `refund` 
+- **Async concurrency** with an `asyncio.Semaphore` (10 parallel requests by default) for both generation and analysis
+- **Retries** on rate limits (429) with increasing back-off, then a fallback call
+- Failed conversations are recorded in the output metadata instead of crashing the run
+
+## Quick start
+
+```bash
+echo "OPENROUTER_API_KEY=your_key" > .env
+
+docker compose build
+docker compose run all        # generate + analyze
+docker compose run generate   # generation only
+docker compose run analyze    # analysis only (needs data/chats.json)
+```
+
+<details>
+<summary>Run without Docker</summary>
+
+```bash
+pip install -r requirements.txt
+PYTHONPATH=. python3 src/generate.py
+PYTHONPATH=. python3 src/analyze.py
+```
+
+Windows (PowerShell): `$env:PYTHONPATH="."; python src/generate.py`
+</details>
+
+Settings — number of dialogues, turns, concurrency, model — live in [`src/config.py`](src/config.py).
+
+## Next steps
+
+- **Self-evaluation.** Generated dialogues already carry ground-truth labels (intent, persona, whether a mistake was injected). Comparing them with the analyzer's predictions gives accuracy per field — a built-in eval set
+- Native structured outputs instead of parsing JSON from text

@@ -10,3 +10,4 @@ ENV/
 
 
 *.log
+.DS_Store
